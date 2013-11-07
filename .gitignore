@@ -1,0 +1,8 @@
+# Compiled source
+*.o
+*.out
+*.exe
+
+# Temp files
+*~
+*.bak
