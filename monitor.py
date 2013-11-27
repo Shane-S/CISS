@@ -1,18 +1,22 @@
 import os
 from pyinotify import WatchManager, Notifier, ThreadedNotifier, EventsCodes, ProcessEvent
 
+# the directory that will be monitored
+watched_dir = '/temp'
+
+
 # The class that will be passed into the watcher to be called on triggered events
 class PTmp(ProcessEvent):
     def process_IN_CREATE(self, event):
         print "Create: %s" %  event.name#os.path.join(event.path, event.name)
         if event.name == "0"
-        	LED_OFF()
+            LED_OFF()
         if event.name == "1"
-        	LED_RED()
+            LED_RED()
         if event.name == "2"
-        	LED_BLUE()
+            LED_BLUE()
         if event.name == "3"
-        	LED_GREEN()
+            LED_GREEN()
 
     #def process_IN_DELETE(self, event):
     #    print "Remove: %s" %  os.path.join(event.path, event.name)
@@ -26,11 +30,11 @@ mask = EventsCodes.IN_CREATE
 #create the notifier
 notifier = Notifier(wm, PTmp())
 
-# 	the watch to be added to the watch
-# 	'/[monitored directory]'
-# 	rec=False means no monitoring of nested dirs, can be set true
-#	wdd is used for removing 
-wdd = wm.add_watch('/tmp', mask, rec=False)
+#   the watch to be added to the watch
+#   '/[monitored directory]'
+#   rec=False means no monitoring of nested dirs, can be set true
+#   wdd is used for removing 
+wdd = wm.add_watch(watched_dir, mask, rec=False)
 
 LEDSETUP()
 
