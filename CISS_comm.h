@@ -12,16 +12,6 @@ typedef struct server_response
 } server_response;
 
 /**
- * Contains the command and parameters from the server. Currently, parameters
- * consist only of an integer for the LED colour.
- */
-typedef struct CISS_command
-{
-	char *cmd;
-	void *params;
-}
-
-/**
  * Writes the server's response to a buffer.
  *
  * @param rx_data 		A pointer to data received from the server.

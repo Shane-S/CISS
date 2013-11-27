@@ -1,67 +1,62 @@
 #include <stdio.h>
 #include <string.h>
-#include <json/json.h>
+#include "CISS_json-utils.h"
 
 /**
  * TODO: Add JSON object creation code (packages sensor data into JSON 
  *		 objects).
- * TODO: Parse agreed-upon commands from the server (implement
- * 		 CISS_parse_commands).
- * TODO: Remove extraneous test code (enum CISS_response_type, for example).
  */
 
-enum CISS_response_type
+int CISS_parse_commands(const char *command_string)
 {
-	CISS_response_command,
-	CISS_response_info
-};
-
-int main(void)
-{
-	size_t 					i 			= 0;
-	const char				*data_store	= "{ \"type\" : \"command\", \"destination\" : \"sensor1\"}";
-	json_object 			*jobj		= json_tokener_parse(data_store);
-	enum json_type 			type;
-	enum CISS_response_type response;
-	int	 					destination;
+	json_object 	*jobj = json_tokener_parse(command_string);
+	enum json_type 	type;
+	int 			command = CISS_PARSE_ERROR;
 	
 	json_object_object_foreach(jobj, key, val)
 	{
 		type = json_object_get_type(val);
-		if(type == json_type_string)
+		switch(type)
 		{
-			const char *value = json_object_get_string(val);
-			if(strcmp(key, "type") == 0)
+			case json_type_string:
 			{
-				if(strcmp(value, "command") == 0)
+				const char *value = json_object_get_string(val);
+				if(strcmp(key, "@command") != 0)
 				{
-					response = CISS_response_command;
+					fprintf(stderr, "Invalid value \"%s\" encountered for key \"%s\".\n", value, key);
+					return CISS_PARSE_ERROR;
 				}
-				else if(strcmp(value, "info") == 0)
+				
+				if(strcmp(value, "stop-irrigation") == 0)
 				{
-					response = CISS_response_info;
+					command = CISS_STOP_IRRIGATION;
 				}
-				else
+				else if(strcmp(value, "start-irrigation") != 0) /* I.e., this is neither "stop-irrigation" nor "start-irrigation" */
 				{
-					printf("Error: invalid response type (must be command or info).\n");
+					fprintf(stderr, "Error: invalid command (expected \"start-irrigation\" or \"stop-irrigation\").\n");
+					return CISS_PARSE_ERROR;
 				}
 			}
-			else if(strcmp(key, "destination") == 0)
+			break;
+			
+			case json_type_int:
 			{
-				if(strcmp(value, "sensor1") == 0)
+				const int colour = json_object_get_int(val);
+				if(strcmp(key, "@params") != 0 || 
+				   !(colour >= 0 && colour <=2))
 				{
-					destination = 1;
+					fprintf(stderr, "Invalid value \"%d\" encountered for key \"%s\".\n", colour, key);
+					return CISS_PARSE_ERROR;
 				}
-				/* and so on */
-				else
-				{
-					printf("Error: invalid destination.\n");
-				}
+				
+				command = colour + 1;
 			}
-		}
+			break;
+			
+			default:
+				return CISS_PARSE_ERROR;
+		}	
 	}
-
-	printf("The type is %s.\n", (response == CISS_response_command) ? "command" : "info");
-	printf("The destination is sensor %d.\n", destination);
-	return 0;
+	
+	return command;
 }
