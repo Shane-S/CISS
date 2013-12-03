@@ -1,6 +1,10 @@
 #ifndef CISS_COMM_H
 #define CISS_COMM_H
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <curl/curl.h>
+#include <json/json.h>
 
 /**
  * Contains the server's response.
@@ -25,4 +29,6 @@ typedef struct server_response
  */
 size_t WriteResponseCallback(char *rx_data, size_t rx_data_size, 
 							size_t rx_data_nmemb, void *rx_buf);
+
+void CISS_comm_init(CURL **handle, const char *credentials);
 #endif
