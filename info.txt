@@ -1,0 +1,2 @@
+http://pyinotify.sourceforge.net/#Quick_start
+https://code.google.com/p/raspberry-gpio-python/wiki/BasicUsage
