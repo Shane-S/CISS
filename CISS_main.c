@@ -29,12 +29,13 @@ int main()
 	char filename[NAME_BUF_SIZE];
 	char sensor[NAME_BUF_SIZE];
 	char timestamp[NAME_BUF_SIZE];
+	int reading = 0;
 	json_object *server_JSON;
 	
-	CISS_read_filename("./testdir", filename, inotifyFd);
+	CISS_read_file("./testdir", filename, inotifyFd, &reading);
 	CISS_parse_filename(filename, sensor, timestamp);
 	CISS_delete_file("testdir/", filename);
-	server_JSON = CISS_create_reading_JSON(sensor, timestamp, 100, "devices/ciss-I/_mac/0x298493429348329");
+	server_JSON = CISS_create_reading_JSON(sensor, timestamp, reading, "devices/ciss-I/_mac/0x298493429348329");
 	printf("The JSON:\n\n %s\n", json_object_to_json_string(server_JSON));
 	
 	#if 0

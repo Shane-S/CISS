@@ -10,10 +10,7 @@ void CISS_delete_file(const char *directory, const char *filename)
     
     /* This section cleans out the destination directory */
     /* Create a string to concatenate the directory to clean out */
-    strcat(removal, directory);
-    strcat(removal, "\"");
-    strcat(removal, filename);
-    strcat(removal, "\"");
+    sprintf(removal + 3, "\"%s%s\"", directory, filename);
 
     /* The system code removes all files in the directory */
     system(removal);
@@ -43,13 +40,16 @@ void CISS_parse_filename(const char *filename, char *sensor, char *timestamp)
  * Borrowed code from: http://man7.org/tlpi/code/online/dist/inotify/demo_inotify.c.html
  */
 
-int CISS_read_filename(const char *directory, char *filename, int inotifyFd)
+int CISS_read_file(const char *directory, char *filename, int inotifyFd, int *reading)
 {
     char buf[INOT_BUF_SIZE];
+    char file_contents[64] = {0};
+    char path[NAME_BUF_SIZE] = {0};
+    FILE *written;
     ssize_t numRead;
     struct inotify_event *event;
 
-    inotify_add_watch(inotifyFd, directory, IN_CREATE);
+    inotify_add_watch(inotifyFd, directory, IN_CLOSE_WRITE);
 
 	numRead = read(inotifyFd, buf, INOT_BUF_SIZE);
 	if (numRead == 0 || numRead == -1)
@@ -57,6 +57,16 @@ int CISS_read_filename(const char *directory, char *filename, int inotifyFd)
 
 	event = (struct inotify_event *) buf;
 	strcpy(filename, event->name);
+	sprintf(path, "%s", directory);
+	sprintf(path + strlen(directory), "%c", '/');
+	sprintf(path + strlen(directory) + 1, "%s", filename);
+	printf("%s\n", path);
+	
+	printf("path: %s\n", path); 
+
+	written = fopen(path, "r");
+	fgets(file_contents, 64, written);
+	sscanf(file_contents, "%d", reading);
     return 0;
 }
 
