@@ -61,6 +61,7 @@ int main(int argc, char **argv)
 	{
 		CISS_read_file(SENSOR_DATA_DIR, filename, inotifyFd, &reading);
 		CISS_parse_filename(filename, sensor, &timestamp);
+		CISS_delete_file(SENSOR_DATA_DIR, filename);
 		server_JSON = CISS_create_reading_JSON(sensor, timestamp, reading, SRC_URI);
 		/*CISS_send_data(*/
 	}
