@@ -34,7 +34,7 @@ void CISS_comm_init(CURL **handle, 	struct curl_slist *headers, const char *cred
 	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);	/* Headers to send with the request */
 }
 
-void CISS_send_sensor_data(CURL *handle, )
+void CISS_send_sensor_data(CURL *handle, const char *data_URL, const char *data)
 {
 	curl_easy_setopt(handle, CURLOPT_POST, 1);				/* libcURL will POST data until set otherwise */
 	
@@ -44,3 +44,5 @@ void CISS_send_sensor_data(CURL *handle, )
 
 	curl_easy_perform(handle);
 }
+
+void CISS
