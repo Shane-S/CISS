@@ -1,5 +1,6 @@
-import os
-from pyinotify import WatchManager, ProcessEvent, Notifier, ThreadedNotifier, EventsCodes 
+limport os
+import pyinotify
+from pyinotify import WatchManager, ProcessEvent, Notifier, ThreadedNotifier, EventsCodes
 
 # the directory that will be monitored
 watched_dir = './cmds'
@@ -21,7 +22,7 @@ class PTmp(ProcessEvent):
 wm = WatchManager()
 
 #create the mask that determines which events to watch for
-mask = IN_CLOSE_WRITE 
+mask = pyinotify.IN_CLOSE_WRITE 
 
 #create the notifier
 notifier = Notifier(wm, PTmp())
@@ -32,7 +33,7 @@ notifier = Notifier(wm, PTmp())
 #   wdd is used for removing 
 wdd = wm.add_watch(watched_dir, mask, rec=False)
 
-LEDSETUP()
+#LEDSETUP()
 
 while True:  # loop forever
     # process the queue of events as explained above
@@ -41,3 +42,4 @@ while True:  # loop forever
         # read notified events and enqeue them
         notifier.read_events()
     # you can do some tasks here...
+
