@@ -60,10 +60,7 @@ int CISS_read_file(const char *directory, char *filename, int inotifyFd, int *re
 	sprintf(path, "%s", directory);
 	sprintf(path + strlen(directory), "%c", '/');
 	sprintf(path + strlen(directory) + 1, "%s", filename);
-	printf("%s\n", path);
 	
-	printf("path: %s\n", path); 
-
 	written = fopen(path, "r");
 	fgets(file_contents, 64, written);
 	sscanf(file_contents, "%d", reading);

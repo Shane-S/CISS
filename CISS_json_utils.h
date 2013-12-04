@@ -37,10 +37,10 @@ int CISS_parse_commands(const char *command_string);
  * @param sensor    The sensor from which the reading came.
  * @param timestamp A timestamp indicating when the reading was taken.
  * @param reading   The sensor reading.
- * @param src		URI pointing to the source of this data.
+ * @param src	    URI pointing to the source of this data.
  *
  * @return A pointer to a json_object struct containing the sensor reading information.
  */
 json_object* CISS_create_reading_JSON(const char *sensor, const char *timestamp,
-										int reading, const char *src);
+										int reading, const char *src_uri);
 #endif
