@@ -1,31 +1,28 @@
 import os
-from pyinotify import WatchManager, Notifier, ThreadedNotifier, EventsCodes, ProcessEvent
+from pyinotify import WatchManager, ProcessEvent, Notifier, ThreadedNotifier, EventsCodes 
 
 # the directory that will be monitored
-watched_dir = '/temp'
+watched_dir = './cmds'
 
 
 # The class that will be passed into the watcher to be called on triggered events
 class PTmp(ProcessEvent):
-    def process_IN_CREATE(self, event):
+    def process_IN_CLOSE_WRITE(self, event):
         print "Create: %s" %  event.name#os.path.join(event.path, event.name)
-        if event.name == "0"
+        if event.name == "0":
             LED_OFF()
-        if event.name == "1"
+        if event.name == "1":
             LED_RED()
-        if event.name == "2"
+        if event.name == "2":
             LED_BLUE()
-        if event.name == "3"
+        if event.name == "3":
             LED_GREEN()
-
-    #def process_IN_DELETE(self, event):
-    #    print "Remove: %s" %  os.path.join(event.path, event.name)
 
 # create the watch manager
 wm = WatchManager()
 
 #create the mask that determines which events to watch for
-mask = EventsCodes.IN_CREATE 
+mask = IN_CLOSE_WRITE 
 
 #create the notifier
 notifier = Notifier(wm, PTmp())
