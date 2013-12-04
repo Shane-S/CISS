@@ -21,6 +21,10 @@ def ReadChannel(channel):
   data = (adc[1]&3 << 8) + adc[2]
   return data
 
+# Open SPI bus
+spi = spidev.SpiDev()
+spi.open(0,0)
+
 #define delay between readings
 delay = 1
 

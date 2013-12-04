@@ -17,7 +17,7 @@ size_t WriteResponseCallback(char *rx_data, size_t rx_data_size,
 	return actual_size;
 }
 
-void CISS_comm_init(CURL **handle, 	struct curl_slist *headers, const char *credentials)
+void CISS_comm_init(CURL **handle, const char *credentials, server_response *buf)
 {
 	curl_global_init(CURL_GLOBAL_ALL);
 	
@@ -28,21 +28,26 @@ void CISS_comm_init(CURL **handle, 	struct curl_slist *headers, const char *cred
 	
 	*handle 	= curl_easy_init();
 	
-	curl_easy_setopt(handle, CURLOPT_USERPWD, credentials);	/* Set basic authentication header */
-	curl_easy_setopt(handle, CURLOPT_AUTOREFERER, 1);		/* libcURL will set the Referer header when redirected */
-	curl_easy_setopt(handle, CURLOPT_FOLLOWLOCATION, 1);	/* libcURL will follow redirects */
-	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);	/* Headers to send with the request */
+	curl_easy_setopt(handle, CURLOPT_USERPWD, credentials);					/* Set basic authentication header */
+	curl_easy_setopt(handle, CURLOPT_AUTOREFERER, 1);						/* libcURL will set the Referer header when redirected */
+	curl_easy_setopt(handle, CURLOPT_FOLLOWLOCATION, 1);					/* libcURL will follow redirects */
+	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, headers);					/* Headers to send with the request */
+	curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, WriteResponseCallback);	/* Write callback function */
 }
 
 void CISS_send_sensor_data(CURL *handle, const char *data_URL, const char *data)
 {
 	curl_easy_setopt(handle, CURLOPT_POST, 1);				/* libcURL will POST data until set otherwise */
-	
-	/* Sends the data to the server; move this into a function. */
 	curl_easy_setopt(handle, CURLOPT_URL, data_URL);
 	curl_easy_setopt(handle, CURLOPT_POSTFIELDS, test_data);
-
 	curl_easy_perform(handle);
 }
 
-void CISS
+void CISS_get_commands(CURL *handle, const char *cmd_URL)
+{
+	curl_easy_setopt(handle, CURLOPT_GET, 1);
+	curl_easy_setopt(hande, CURLOPT_URL, cmd_URL);
+	curl_easy_perform(handle);
+	
+}	
+

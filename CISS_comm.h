@@ -30,5 +30,9 @@ typedef struct server_response
 size_t WriteResponseCallback(char *rx_data, size_t rx_data_size, 
 							size_t rx_data_nmemb, void *rx_buf);
 
-void CISS_comm_init(CURL **handle, const char *credentials);
+void CISS_comm_init(CURL **handle, const char *credentials, server_response *buf);
+
+void CISS_send_sensor_data(CURL *handle, const char *data_URL, const char *data);
+
+void CISS_get_commands(CURL *handle, const char *cmd_URL);
 #endif
