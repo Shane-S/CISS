@@ -3,8 +3,8 @@
 #include "CISS_utils.h"
 #include "CISS_json_utils.h"
 
-#define KEY 		"AK7F3095A614484A5EBC911649BD320F72"
-#define SECRET 		"9b003d4267da4e7490d4db8b552a8465"
+#define KEY 	"AC2165B6D5A198413694007924B82EB03B"
+#define SECRET	"ec48b164d5ac4c6280eccfa4d61310bd"
 
 /**
  * TODO: Perform error checking.
@@ -32,11 +32,14 @@ int main()
 	int reading = 0;
 	json_object *server_JSON;
 	
-	CISS_read_file("./testdir", filename, inotifyFd, &reading);
-	CISS_parse_filename(filename, sensor, timestamp);
-	CISS_delete_file("testdir/", filename);
-	server_JSON = CISS_create_reading_JSON(sensor, timestamp, reading, "devices/ciss-I/_mac/0x298493429348329");
-	printf("The JSON:\n\n %s\n", json_object_to_json_string(server_JSON));
+	while(1)
+	{
+		CISS_read_file("./testdir", filename, inotifyFd, &reading);
+		CISS_parse_filename(filename, sensor, timestamp);
+		CISS_delete_file("testdir/", filename);
+		server_JSON = CISS_create_reading_JSON(sensor, timestamp, reading, "devices/ciss-I/_mac/0x298493429348329");
+		printf("The JSON:\n\n %s\n", json_object_to_json_string(server_JSON));
+	}
 	
 	#if 0
 	curl_slist_free_all(headers);

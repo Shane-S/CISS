@@ -4,7 +4,6 @@ from pyinotify import WatchManager, ProcessEvent, Notifier, ThreadedNotifier, Ev
 # the directory that will be monitored
 watched_dir = './cmds'
 
-
 # The class that will be passed into the watcher to be called on triggered events
 class PTmp(ProcessEvent):
     def process_IN_CLOSE_WRITE(self, event):
