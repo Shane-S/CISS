@@ -4,9 +4,9 @@ import spidev
 import time
 import os
 
-# Open SPI bus
-spi = spidev.SpiDev()
-spi.open(0,0)
+def CISS_make_filename(sensor_name):
+	epoch = time.time();
+	return sensor_name + '&' + str(epoch)
 
 # Function to read data from MCP3008 chip
 # Channel must be an integer 0-7
@@ -15,6 +15,10 @@ def ReadChannel(channel):
   print("adc[1]: {}, adc[2]: {}".format(adc[1], adc[2]))
   data = (adc[1]&3 << 8) + adc[2]
   return data
+
+# Open SPI bus
+spi = spidev.SpiDev()
+spi.open(0,0)
 
 #define delay between readings
 delay = 1
