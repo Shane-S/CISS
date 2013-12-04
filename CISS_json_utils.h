@@ -41,6 +41,6 @@ int CISS_parse_commands(const char *command_string);
  *
  * @return A pointer to a json_object struct containing the sensor reading information.
  */
-json_object* CISS_create_reading_JSON(const char *sensor, const char *timestamp,
+json_object* CISS_create_reading_JSON(const char *sensor, const long long int timestamp,
 										int reading, const char *src_uri);
 #endif

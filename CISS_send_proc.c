@@ -10,8 +10,20 @@
 #define SECRET			"ec48b164d5ac4c6280eccfa4d61310bd"
 #define CREDENTIALS		KEY ":" SECRET
 
-/* Data endpoint (TBD) */
-#define DATA_URL		
+/* Base API URL  */
+#define BASE_URL "http://192.81.129.209"
+#define API_PORT ":9090"
+#define API_URL BASE_URL API_PORT
+
+/* CISS app specifics */
+#define APP_NAME "Ciss"
+#define DC_NAME "Ambient.light"
+#define DEV_SN "12345"
+#define DEV_PROFILE "ciss1"
+#define SRC_URI "devices/" DEV_PROFILE "/_sn/" DEV_SN
+
+/* Reading endpoint */
+#define READING_URL API_URL "/_apps/" APP_NAME "/_data/" DC_NAME
 
 /* Sensor data directory */
 #define SENSOR_DATA_DIR	"./sensor_data/"
@@ -31,7 +43,7 @@ int main(int argc, char **argv)
 	int 			inotifyFd 			= inotify_init();
 	char 			filename[NAME_BUF_SIZE]		= {0};
 	char 			sensor[NAME_BUF_SIZE]		= {0};
-	char 			timestamp[NAME_BUF_SIZE]	= {0};
+	long long int		timestamp			= 0;
 	int 			reading 			= 0;
 	json_object 		*server_JSON			= NULL;
 
@@ -48,8 +60,9 @@ int main(int argc, char **argv)
 	while(1)
 	{
 		CISS_read_file(SENSOR_DATA_DIR, filename, inotifyFd, &reading);
-		CISS_parse_filename(filename, sensor, timestamp);
-		server_JSON = CISS_create_reading_JSON(sensor, timestamp, reading, "random/src");
+		CISS_parse_filename(filename, sensor, &timestamp);
+		server_JSON = CISS_create_reading_JSON(sensor, timestamp, reading, SRC_URI);
+		/*CISS_send_data(*/
 	}
 	
 	return 0;

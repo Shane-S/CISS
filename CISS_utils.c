@@ -16,12 +16,13 @@ void CISS_delete_file(const char *directory, const char *filename)
     system(removal);
 }
 
-void CISS_parse_filename(const char *filename, char *sensor, char *timestamp)
+void CISS_parse_filename(const char *filename, char *sensor, long long int *timestamp)
 {
 	int len = strlen(filename);
 	int i;
 	int j;
 	int time_len;
+	char temp_time[256] = {0};
 	for(i = 0; i < len; ++i)
 		if(filename[i] == '&')
 			break;
@@ -32,8 +33,9 @@ void CISS_parse_filename(const char *filename, char *sensor, char *timestamp)
 	sensor[i] = '\0';
 	
 	for(j = 0; j < time_len; ++j)
-		timestamp[j] = filename[j + i + 1];
-	timestamp[j] = '\0';
+		temp_time[j] = filename[j + i + 1];
+	temp_time[j] = '\0';
+	sscanf(temp_time, "%lld", timestamp);
 }
 
 /**
