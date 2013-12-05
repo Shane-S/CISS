@@ -57,9 +57,9 @@ json_object* CISS_create_reading_JSON(const char *sensor, const long long int ti
 	json_object_array_add(points, datapoint);
 
 	/* Add all objects to the returned object */
-	json_object_object_add(sensor_JSON, "tags", tags);
-	json_object_object_add(sensor_JSON, "loc", loc);
-	json_object_object_add(sensor_JSON, "src_uri", src_uri);
+	json_object_object_add(sensor_JSON, "@tags", tags);
+	json_object_object_add(sensor_JSON, "@loc", loc);
+	json_object_object_add(sensor_JSON, "@src_uri", src_uri);
 	json_object_object_add(sensor_JSON, "datapoints", points);
 
 	return sensor_JSON;
