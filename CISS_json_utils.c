@@ -38,7 +38,7 @@ json_object* CISS_create_reading_JSON(const char *sensor, const long long int ti
 	json_object *points		= json_object_new_array();
 	json_object *datapoint		= json_object_new_object();
 	json_object *src_uri		= json_object_new_string(src);
-	json_object *time		= json_object_new_int(timestamp);
+	json_object *time		= json_object_new_int64(timestamp);
 	json_object *value		= json_object_new_int(reading);
 	json_object *dst		= json_object_new_object();
 	json_object *channel		= json_object_new_string(sensor);
