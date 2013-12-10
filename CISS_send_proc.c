@@ -22,33 +22,27 @@
 #define DEV_PROFILE "ciss1"
 #define SRC_URI "devices/" DEV_PROFILE "/_sn/" DEV_SN
 
-/* Reading endpoint */
+/* Sensor reading endpoint */
 #define READING_URL API_URL "/_apps/" APP_NAME "/_data/" DC_NAME
 
 /* Sensor data directory */
 #define SENSOR_DATA_DIR	"./sensor_data/"
 
-/**
- * TODO: Revise URLs
- * TODO: Change devicepyinotify
- */
-
-
 int main(int argc, char **argv)
 {
-	CURL 			*handle				= 0;
+	CURL 				*handle					= 0;
 	server_response		rx_buf;
-	CURLcode 		result				= 0;
-	struct curl_slist	*headers			= NULL;
-	int 			inotifyFd 			= inotify_init();
-	char 			filename[NAME_BUF_SIZE]		= {0};
-	char 			sensor[NAME_BUF_SIZE]		= {0};
-	long long int		timestamp			= 0;
-	int 			reading 			= 0;
+	CURLcode 			result					= 0;
+	struct curl_slist	*headers				= NULL;
+	int 				inotifyFd 				= inotify_init();
+	char 				filename[NAME_BUF_SIZE]	= {0};
+	char 				sensor[NAME_BUF_SIZE]	= {0};
+	long long int		timestamp				= 0;
+	int 				reading 				= 0;
 	json_object 		*server_JSON			= NULL;
 
 	pid_t id = fork();
-	if(id == 0) /* We're in the child process; run the the Python script*/
+	if(id == 0) /* We're in the child process; run the Python script*/
 	{
 		FILE *pyFile = fopen("./CISS_sensor_proc.py", "r");
 		Py_SetProgramName(argv[0]);
@@ -56,14 +50,18 @@ int main(int argc, char **argv)
 		PyRun_SimpleFile(pyFile, "./CISS_sensor_proc.py");
 	}
 	
-	/*CISS_comm_init(&handle, CREDENTIALS, &rx_buf);*/
+	CISS_comm_init(&handle, CREDENTIALS, &rx_buf);
 	while(1)
 	{
+		/* Read and delete the file, parse the filename and create the JSON */
 		CISS_read_file(SENSOR_DATA_DIR, filename, inotifyFd, &reading);
-		CISS_parse_filename(filename, sensor, &timestamp);
 		CISS_delete_file(SENSOR_DATA_DIR, filename);
+		CISS_parse_filename(filename, sensor, &timestamp);
 		server_JSON = CISS_create_reading_JSON(sensor, timestamp, reading, SRC_URI);
-		/*CISS_send_data(handle, SENSOR_DATA_URL, json_object_to_json_string(server_JSON));*/
+		
+		/* Send the data and free the JSON object with json_obejct_put */
+		CISS_send_data(handle, SENSOR_DATA_URL, json_object_to_json_string(server_JSON));
+		json_object_put(server_JSON);
 	}
 	
 	return 0;

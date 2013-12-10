@@ -28,19 +28,19 @@ int CISS_parse_commands(const char *command_string)
 json_object* CISS_create_reading_JSON(const char *sensor, const long long int timestamp,
 										int reading, const char *src)
 {
-	/* For our program, these won't change between readings */
+	/* For our program, these four won't change between readings */
 	json_object *tags			= json_object_new_array();
 	json_object *tag1			= json_object_new_string("RaspberryPi");
 	json_object *loc			= json_object_new_object();
 	json_object *name			= json_object_new_string("home");
 	
 	json_object *sensor_JSON 	= json_object_new_object();
-	json_object *points		= json_object_new_array();
+	json_object *points			= json_object_new_array();
 	json_object *datapoint		= json_object_new_object();
 	json_object *src_uri		= json_object_new_string(src);
-	json_object *time		= json_object_new_int64(timestamp);
-	json_object *value		= json_object_new_int(reading);
-	json_object *dst		= json_object_new_object();
+	json_object *time			= json_object_new_int64(timestamp);
+	json_object *value			= json_object_new_int(reading);
+	json_object *dst			= json_object_new_object();
 	json_object *channel		= json_object_new_string(sensor);
 	
 	/* Construct tags array and loc object */

@@ -7,13 +7,10 @@
 
 #define CISS_PARSE_ERROR			-1
 #define CISS_STOP_IRRIGATION 		0
-#define CISS_START_IRRIGAION_RED	1
-#define CISS_START_IRRIGATION_BLUE	2
-#define CISS_START_IRRIGATION_GREEN 3
 
 
 /**
- * Parses the commands received from the server and returns an int indicating
+ * Parses the command JSON received from the server and returns an int indicating
  * the command.
  * 
  * This function is currently for demonstration purposes only; it assumes that
@@ -30,14 +27,17 @@ int CISS_parse_commands(const char *command_string);
 /**
  * Creates a JSON object containing the information from a sensor reading.
  *
- * Note that CISS_parse_commands above, this function is for demonstration
+ * Note that like CISS_parse_commands above, this function is for demonstration
  * only. It would need to know the destination, the tags and the location
- * to be more flexible.
+ * to be more flexible. 
+ * 
+ * Also, it assumes that @params will be 1, 2 or 3 (red, blue or green). Since the
+ * Python thread uses 0, 1, or 2, it subtracts 1 from this value.
  *
  * @param sensor    The sensor from which the reading came.
- * @param timestamp A timestamp indicating when the reading was taken.
- * @param reading   The sensor reading.
- * @param src	    URI pointing to the source of this data.
+ * @param timestamp A timestamp indicating when the reading was taken (epoch format).
+ * @param reading   The sensor reading value.
+ * @param src	    URI pointing to the source of this data (i.e., from which device it came).
  *
  * @return A pointer to a json_object struct containing the sensor reading information.
  */

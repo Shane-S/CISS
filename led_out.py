@@ -13,9 +13,9 @@ def LEDSETUP():
 	GPIO.setup(25, GPIO.OUT)
 
 def LED_OFF():
-	GPIO.output(23, GPIO.LOW)
-	GPIO.output(24, GPIO.LOW)
-	GPIO.output(25, GPIO.LOW)
+	GPIO.output(23, GPIO.HIGH)
+	GPIO.output(24, GPIO.HIGH)
+	GPIO.output(25, GPIO.HIGH)
 
 def LED_RED():
 	GPIO.output(23, GPIO.LOW)
@@ -39,9 +39,6 @@ time.sleep(2)
 LED_BLUE()
 time.sleep(2)
 LED_GREEN()
-#GPIO.output(24, GPIO.HIGH)
-#GPIO.output(23, GPIO.HIGH)
-#GPIO.output(25, GPIO.LOW)
 time.sleep(2)
 LED_OFF()
 GPIO.cleanup()

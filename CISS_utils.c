@@ -8,7 +8,6 @@ void CISS_delete_file(const char *directory, const char *filename)
     removal[1] = 'm';
     removal[2] = ' ';
     
-    /* This section cleans out the destination directory */
     /* Create a string to concatenate the directory to clean out */
     sprintf(removal + 3, "\"%s%s\"", directory, filename);
 
@@ -22,7 +21,7 @@ void CISS_parse_filename(const char *filename, char *sensor, long long int *time
 	int i;
 	int j;
 	int time_len;
-	char temp_time[256] = {0};
+	char temp_time[NAME_BUF_SIZE] = {0};
 	for(i = 0; i < len; ++i)
 		if(filename[i] == '&')
 			break;
@@ -38,10 +37,6 @@ void CISS_parse_filename(const char *filename, char *sensor, long long int *time
 	sscanf(temp_time, "%lld", timestamp);
 }
 
-/**
- * Borrowed code from: http://man7.org/tlpi/code/online/dist/inotify/demo_inotify.c.html
- */
-
 int CISS_read_file(const char *directory, char *filename, int inotifyFd, int *reading)
 {
     char buf[INOT_BUF_SIZE];
@@ -53,16 +48,19 @@ int CISS_read_file(const char *directory, char *filename, int inotifyFd, int *re
 
     inotify_add_watch(inotifyFd, directory, IN_CLOSE_WRITE);
 
+	/* Blocking read; waits for the specified event to happen in the directory */
 	numRead = read(inotifyFd, buf, INOT_BUF_SIZE);
 	if (numRead == 0 || numRead == -1)
 		return -1;
 
+	/* Copy the file name and directory to a string */
 	event = (struct inotify_event *) buf;
 	strcpy(filename, event->name);
 	sprintf(path, "%s", directory);
 	sprintf(path + strlen(directory), "%c", '/');
 	sprintf(path + strlen(directory) + 1, "%s", filename);
 	
+	/* Open the file and save the contents to reading */
 	written = fopen(path, "r");
 	fgets(file_contents, 64, written);
 	sscanf(file_contents, "%d", reading);
